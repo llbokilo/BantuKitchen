@@ -27,12 +27,11 @@ class Operation
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Recette::class)
-     * @Groups("recette:read")
-     * @Groups("ingredient:read")
-     * @Groups("operation:read")
+     * @ORM\ManyToOne(targetEntity=Recette::class, inversedBy="operations")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $RecetteId;
+    private $recette;
+
 
     public function getId(): ?int
     {
@@ -51,15 +50,16 @@ class Operation
         return $this;
     }
 
-    public function getRecetteId(): ?Recette
+    public function getRecette(): ?Recette
     {
-        return $this->RecetteId;
+        return $this->recette;
     }
 
-    public function setRecetteId(?Recette $RecetteId): self
+    public function setRecette(?Recette $recette): self
     {
-        $this->RecetteId = $RecetteId;
+        $this->recette = $recette;
 
         return $this;
     }
+
 }

@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\RecetteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Operation;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -15,6 +18,9 @@ class Recette
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("recette:read")
+     * @Groups("ingredient:read")
+     * @Groups("operation:read")
      */
     private $id;
 
@@ -33,6 +39,26 @@ class Recette
      * @Groups("operation:read")
      */
     private $resume;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="recette", orphanRemoval=true)
+     * @Groups("recette:read")
+     */
+    private $operations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=RecetteIngredient::class, mappedBy="recette", orphanRemoval=true)
+     * @Groups("recette:read")
+     */
+    private $ingredients;
+  
+
+    public function __construct()
+    {
+        $this->operations = new ArrayCollection();
+        $this->ingredients = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -62,4 +88,66 @@ class Recette
 
         return $this;
     }
+
+    /**
+     * @return Collection|Operation[]
+     */
+    public function getOperations(): Collection
+    {
+        return $this->operations;
+    }
+
+    public function addOperation(Operation $operation): self
+    {
+        if (!$this->operations->contains($operation)) {
+            $this->operations[] = $operation;
+            $operation->setRecette($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOperation(Operation $operation): self
+    {
+        if ($this->operations->removeElement($operation)) {
+            // set the owning side to null (unless already changed)
+            if ($operation->getRecette() === $this) {
+                $operation->setRecette(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RecetteIngredient[]
+     */
+    public function getIngredients(): Collection
+    {
+        return $this->ingredients;
+    }
+
+    public function addIngredient(RecetteIngredient $ingredient): self
+    {
+        if (!$this->ingredients->contains($ingredient)) {
+            $this->ingredients[] = $ingredient;
+            $ingredient->setRecette($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIngredient(RecetteIngredient $ingredient): self
+    {
+        if ($this->ingredients->removeElement($ingredient)) {
+            // set the owning side to null (unless already changed)
+            if ($ingredient->getRecette() === $this) {
+                $ingredient->setRecette(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

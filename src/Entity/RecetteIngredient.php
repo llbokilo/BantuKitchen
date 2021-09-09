@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RecetteIngredientRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Serializer\Annotation\Groups ;
 /**
  * @ORM\Entity(repositoryClass=RecetteIngredientRepository::class)
  */
@@ -20,29 +21,27 @@ class RecetteIngredient
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("recette:read")
-     * @Groups("ingredient:read")
-     * @Groups("operation:read")
      */
     private $unite;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups("recette:read")
-     * @Groups("ingredient:read")
-     * @Groups("operation:read")
      */
     private $quantite;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Ingredient::class)
-     * 
+     * @ORM\ManyToOne(targetEntity=Recette::class, inversedBy="ingredients")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $IngredientID;
+    private $recette;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Recette::class)
+     * @ORM\ManyToOne(targetEntity=Ingredient::class, inversedBy="recette")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups("recette:read")
      */
-    private $RecetteId;
+    private $ingredient;
 
     public function getId(): ?int
     {
@@ -73,26 +72,27 @@ class RecetteIngredient
         return $this;
     }
 
-    public function getIngredientID(): ?Ingredient
+
+    public function getRecette(): ?Recette
     {
-        return $this->IngredientID;
+        return $this->recette;
     }
 
-    public function setIngredientID(?Ingredient $IngredientID): self
+    public function setRecette(?Recette $recette): self
     {
-        $this->IngredientID = $IngredientID;
+        $this->recette = $recette;
 
         return $this;
     }
 
-    public function getRecetteId(): ?Recette
+    public function getIngredient(): ?Ingredient
     {
-        return $this->RecetteId;
+        return $this->ingredient;
     }
 
-    public function setRecetteId(?Recette $RecetteId): self
+    public function setIngredient(?Ingredient $ingredient): self
     {
-        $this->RecetteId = $RecetteId;
+        $this->ingredient = $ingredient;
 
         return $this;
     }

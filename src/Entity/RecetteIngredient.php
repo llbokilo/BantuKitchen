@@ -19,16 +19,23 @@ class RecetteIngredient
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("recette:read")
+     * @Groups("ingredient:read")
+     * @Groups("operation:read")
      */
     private $unite;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("recette:read")
+     * @Groups("ingredient:read")
+     * @Groups("operation:read")
      */
     private $quantite;
 
     /**
      * @ORM\ManyToOne(targetEntity=Ingredient::class)
+     * 
      */
     private $IngredientID;
 

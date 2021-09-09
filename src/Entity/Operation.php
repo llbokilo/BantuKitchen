@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OperationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups ;
 
 /**
  * @ORM\Entity(repositoryClass=OperationRepository::class)
@@ -19,11 +20,17 @@ class Operation
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("recette:read")
+     * @Groups("ingredient:read")
+     * @Groups("operation:read")
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity=Recette::class)
+     * @Groups("recette:read")
+     * @Groups("ingredient:read")
+     * @Groups("operation:read")
      */
     private $RecetteId;
 
